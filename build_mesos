@@ -295,6 +295,7 @@ function deb_ {
                -d 'java-runtime-headless'
                -d libcurl3
                -d libsvn1
+               -d libsasl2-modules
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
   rm -f "$this"/pkg.deb
@@ -305,6 +306,7 @@ function rpm_ {
   local opts=( -t rpm
                -d libcurl
                -d subversion
+               -d cyrus-sasl-md5
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
   rm -f "$this"/pkg.rpm
