@@ -247,6 +247,10 @@ function init_scripts {
   mkdir -p usr/bin
   cp -p "$this"/mesos-init-wrapper usr/bin
   case "$1" in
+    fedora/*|redhat/7|redhat/7.*|centos/7|centos/7.*|debian/8*|ubuntu/15*)
+      mkdir -p usr/lib/systemd/system
+      cp "$this"/systemd/master.systemd usr/lib/systemd/system/mesos-master.service
+      cp "$this"/systemd/slave.systemd usr/lib/systemd/system/mesos-slave.service ;;
     debian/*)
       mkdir -p etc/init.d
       cp -p "$this"/init/master.init etc/init.d/mesos-master
@@ -255,10 +259,6 @@ function init_scripts {
       mkdir -p etc/init
       cp "$this"/upstart/master.upstart etc/init/mesos-master.conf
       cp "$this"/upstart/slave.upstart etc/init/mesos-slave.conf ;;
-    fedora/*|redhat/7|redhat/7.*|centos/7|centos/7.*)
-      mkdir -p usr/lib/systemd/system
-      cp "$this"/systemd/master.systemd usr/lib/systemd/system/mesos-master.service
-      cp "$this"/systemd/slave.systemd usr/lib/systemd/system/mesos-slave.service ;;
     *) err "Not sure how to make init scripts for: $1" ;;
   esac
 }
