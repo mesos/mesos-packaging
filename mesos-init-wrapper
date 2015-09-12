@@ -102,8 +102,15 @@ function slave {
     args+=( --resources="${formatted:1}" )         # NB: Leading ';' is clipped
   fi
 
-  if [[ "${args[@]:-}" == *'--no-logger'* ]]; then
-    /usr/sbin/mesos-slave "${args[@]//--no-logger/}"
+  if [[ "${args[@]:-}" == *'--no-logger'* ]]
+  then
+    local clean_args=()
+    for i in "${args[@]}"; do
+      if [[ "${i}" != "--no-logger" ]]; then
+        clean_args+=( "${i}" )
+      fi
+    done
+    /usr/sbin/mesos-slave "${clean_args[@]}"
   else
     logged /usr/sbin/mesos-slave "${args[@]:-}"
   fi
@@ -134,8 +141,15 @@ function master {
     fi
   done
 
-  if [[ "${args[@]:-}" == *'--no-logger'* ]]; then
-    /usr/sbin/mesos-master "${args[@]//--no-logger/}"
+  if [[ "${args[@]:-}" == *'--no-logger'* ]]
+  then
+    local clean_args=()
+    for i in "${args[@]}"; do
+      if [[ "${i}" != "--no-logger" ]]; then
+        clean_args+=( "${i}" )
+      fi
+    done
+    /usr/sbin/mesos-master "${clean_args[@]}"
   else
     logged /usr/sbin/mesos-master "${args[@]:-}"
   fi
