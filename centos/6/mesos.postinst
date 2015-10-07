@@ -1,0 +1,8 @@
+ldconfig
+
+# Enable POSIX launcher if Mesos verion is strictly greater than 0.24
+_VERSION=$(mesos-slave --version|awk '{print $2}')
+IFS='.' read -a VERSION <<< "$_VERSION"
+if [ ${VERSION[0]} -gt 0 ] || [ ${VERSION[1]} -gt 24 ]; then
+  echo posix > /etc/mesos-slave/launcher
+fi
