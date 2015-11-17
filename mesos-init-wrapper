@@ -103,7 +103,19 @@ function slave {
     local formatted="$(printf ';%s' "${resources[@]}")"
     args+=( --resources="${formatted:1}" )         # NB: Leading ';' is clipped
   fi
-  logged /usr/sbin/mesos-slave "${args[@]}"
+
+  if [[ "${args[@]:-}" == *'--no-logger'* ]]
+  then
+    local clean_args=()
+    for i in "${args[@]}"; do
+      if [[ "${i}" != "--no-logger" ]]; then
+        clean_args+=( "${i}" )
+      fi
+    done
+    /usr/sbin/mesos-slave "${clean_args[@]}"
+  else
+    logged /usr/sbin/mesos-slave "${args[@]:-}"
+  fi
 }
 
 function master {
@@ -132,7 +144,19 @@ function master {
       fi
     fi
   done
-  logged /usr/sbin/mesos-master "${args[@]}"
+
+  if [[ "${args[@]:-}" == *'--no-logger'* ]]
+  then
+    local clean_args=()
+    for i in "${args[@]}"; do
+      if [[ "${i}" != "--no-logger" ]]; then
+        clean_args+=( "${i}" )
+      fi
+    done
+    /usr/sbin/mesos-master "${clean_args[@]}"
+  else
+    logged /usr/sbin/mesos-master "${args[@]:-}"
+  fi
 }
 
 # Send all output to syslog and tag with PID and executable basename.
