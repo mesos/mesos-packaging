@@ -4,15 +4,20 @@ Build scripts to create a Mesos Debian package with [FPM](https://github.com/jor
 
 Mesos is a cluster manager that provides efficient resource isolation and sharing across distributed applications, or frameworks. It can run Hadoop, MPI, Hypertable, Spark (a new framework for low-latency interactive and iterative jobs), and other applications. Currently is in the Apache Incubator and going through rapid development, though stable enough for a production usage. See [Mesos website](http://incubator.apache.org/mesos/) for more details.
 
-## Requirements
-
-  * ruby
-  * prerequisites:
+## Packaging requirements
 
 ```
     sudo apt-get install ruby ruby-dev python-dev autoconf automake git make libssl-dev libcurl3 libtool
     sudo gem install fpm
 ```
+
+## Mesos requirements
+
+Mesos has its own OS-level build requirements that need to be installed as well before building.
+
+See https://mesos.apache.org/gettingstarted/ for more information
+
+## Setting the maintainer
 
 define in e.g. `~/.bash_profile` a `MAINTAINER` variable
 
@@ -31,4 +36,5 @@ define in e.g. `~/.bash_profile` a `MAINTAINER` variable
 ## Authors
 
    * Tomas Barton
+   * Srdjan Grubor <sgnn7@sgnn7.org>
 
