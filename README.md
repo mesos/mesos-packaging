@@ -23,6 +23,10 @@ define in e.g. `~/.bash_profile` a `MAINTAINER` variable
 
 	export MAINTAINER="email@example.com"
 
+## Setting make options (optional)
+
+	export MAKEFLAGS=-j8
+
 ## Building deb package
 
 	./build_mesos wheezy
