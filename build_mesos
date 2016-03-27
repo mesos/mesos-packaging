@@ -159,14 +159,7 @@ function build {(
   ./bootstrap
   mkdir -p "$build_dir"
   cd "$build_dir"
-
-  # A bug in Autoconf 2.64 and earlier causes `AC_CONFIG_LINKS(src/a/b:src/c/d)`
-  # to create symlink 'src/a/b' that points to 'src/c/d' instead of pointing to
-  # '../../src/c/d'. This bug is triggered only when invoking configure script
-  # with an absolute path. Thus, we use relative invocation here.
-  # http://git.savannah.gnu.org/cgit/autoconf.git/commit/?id=13e3570
-  rel_src_dir="$(realpath --relative-to=. $src_dir)"
-  "$rel_src_dir"/configure $(configure_opts)
+  "$src_dir"/configure $(configure_opts)
   make
 )}
 
