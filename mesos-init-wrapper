@@ -112,7 +112,7 @@ function slave {
         clean_args+=( "${i}" )
       fi
     done
-    /usr/sbin/mesos-slave "${clean_args[@]}"
+    exec /usr/sbin/mesos-slave "${clean_args[@]}"
   else
     logged /usr/sbin/mesos-slave "${args[@]:-}"
   fi
@@ -153,7 +153,7 @@ function master {
         clean_args+=( "${i}" )
       fi
     done
-    /usr/sbin/mesos-master "${clean_args[@]}"
+    exec /usr/sbin/mesos-master "${clean_args[@]}"
   else
     logged /usr/sbin/mesos-master "${args[@]:-}"
   fi
