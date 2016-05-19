@@ -453,7 +453,7 @@ function configure_opts {
   # package to overwrite system installed packages such as setuptools
   # and python-protobuf. Instead, we should explicitly list specific
   # python dependencies.
-  options += " --disable-python-dependency-install"
+  options+=" --disable-python-dependency-install"
 
   out "$options"
 }
