@@ -446,7 +446,7 @@ function configure_opts {
   fi
 
   # Pass on any configure flags to Mesos configure script.
-  options+="$configure_flags"
+  options+=" $configure_flags"
 
   # Do not auto-install python dependencies. This can cause the
   # package to overwrite system installed packages such as setuptools
