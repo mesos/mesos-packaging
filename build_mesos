@@ -6,7 +6,7 @@ cat <<USAGE
  USAGE: build_mesos (--repo <git URL>)?
                     (--nominal-version <version>)?
                     (--build-version <debian_revision or rpm release>)?
-                    (--enable-ssl)?
+                    (--configure-flags <extra configure flags for Mesos>)?
 
   Performs a build in ./mesos-repo after checking out a recent copy of Mesos.
   The default is to checkout:
@@ -41,8 +41,8 @@ cat <<USAGE
   specify the code checkout to use. \`--build-dir' to specify where 'make'
   should be run from. If you have already run built mesos in that directory,
   then you can use \`--prebuilt' to tell the script to just run make install
-  inside the build directory to make the package. Use \`--enable-ssl' to build
-  with SSL support.
+  inside the build directory to make the package. Use \`--configure-flags'
+  to specify extra flags to be passed to Mesoc configure script.
 
 USAGE
 }; function --help { -h ;}
@@ -55,7 +55,7 @@ function globals {
   use_git_version=false
   prebuilt=false
   extra_libs=''
-  enable_ssl=false
+  configure_flags=""
 }; globals
 
 function as_absolute {
@@ -78,7 +78,7 @@ function main {
       --nominal-version)        version="$2"       ; shift 2 ;;
       --build-version)          build_version="$2" ; shift 2 ;;
       --extra-libs)             extra_libs="$2"    ; shift 2 ;;
-      --enable-ssl)             enable_ssl=true    ; shift 1 ;;
+      --configure-flags)        configure_flags="$2"    ; shift 2 ;;
       *)                        err 'Argument error. Please see help.' ;;
     esac
   done
@@ -445,9 +445,8 @@ function configure_opts {
   then options+=" --enable-optimize"
   fi
 
-  if $enable_ssl; then
-    options+=" --enable-libevent --enable-ssl"
-  fi
+  # Pass on any configure flags to Mesos configure script.
+  options+="$configure_flags"
 
   # Do not auto-install python dependencies. This can cause the
   # package to overwrite system installed packages such as setuptools
