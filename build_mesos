@@ -245,6 +245,7 @@ function create_installation {(
   then
     echo /var/lib/mesos          > etc/mesos-master/work_dir
     echo 1                       > etc/mesos-master/quorum
+    echo /var/lib/mesos          > etc/mesos-slave/work_dir
   fi
   extra_libs
   init_scripts "$linux"
