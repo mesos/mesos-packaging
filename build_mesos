@@ -335,6 +335,7 @@ function deb_ {
                --deb-recommends zookeeper-bin
                -d 'java-runtime-headless | java2-runtime-headless | default-jre'
                -d libcurl3
+               -d libevent-dev
                -d libsvn1
                -d libsasl2-modules
                --after-install "$this/$asset_dir/mesos.postinst"
@@ -344,10 +345,18 @@ function deb_ {
 }
 
 function rpm_ {
+
+  case "$linux" in
+    centos/6) libevent_devel_pkg=libevent2-devel ;;
+    centos/7) libevent_devel_pkg=libevent-devel ;;
+    *)        err "Unknown CentOS distribution: $linux" ;;
+  esac
+
   local opts=( -t rpm
                -d libcurl
                -d subversion
                -d cyrus-sasl-md5
+               -d $libevent_devel_pkg
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
   rm -f "$this"/pkg.rpm
