@@ -390,6 +390,7 @@ and iterative jobs), and other applications."
                -m dev@mesos.apache.org
                --config-files etc/
                --prefix=/ )
+  export PATH="$gem_bin":$PATH
   ( cd toor && "$gem_bin"/fpm "${opts[@]}" "$@" -- . )
 }
 
