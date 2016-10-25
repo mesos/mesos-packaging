@@ -56,6 +56,7 @@ function globals {
   prebuilt=false
   extra_libs=''
   configure_flags=""
+  rename=false
 }; globals
 
 function as_absolute {
@@ -73,6 +74,7 @@ function main {
       --src-dir)                src_dir="$2"       ; shift 2 ;;
       --build-dir)              build_dir="$2"     ; shift 2 ;;
       --prebuilt)               prebuilt=true      ; shift 1 ;;
+      --rename)                 rename=true      ; shift 1 ;;
       --repo)                   repo="$2"          ; shift 2 ;;
       --branch)                 branch="$2"        ; shift 2 ;;
       --nominal-version)        version="$2"       ; shift 2 ;;
@@ -340,8 +342,14 @@ function deb_ {
                -d libsasl2-modules
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
-  rm -f "$this"/pkg.deb
-  fpm_ "${opts[@]}" -p "$this"/pkg.deb
+  pkgname="pkg"
+  if $rename; then
+    os_tag=${linux//[\/.]/} # convert "ubuntu/14.04" to "ubuntu1404"
+    pkgname="mesos_${version}-${build_version}.${os_tag}_${arch}"
+  fi
+
+  rm -f "$this"/"$pkgname".deb
+  fpm_ "${opts[@]}" -p "$this"/"$pkgname".deb
 }
 
 function rpm_ {
@@ -362,8 +370,14 @@ function rpm_ {
                -d $libevent_devel_pkg
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
-  rm -f "$this"/pkg.rpm
-  fpm_ "${opts[@]}" -p "$this"/pkg.rpm
+
+  pkgname="pkg"
+  if $rename; then
+    os_tag=${linux//[\/.]/} # convert "ubuntu/14.04" to "ubuntu1404"
+    pkgname="mesos-${version}-${build_version}.${os_tag}.${arch}"
+  fi
+  rm -f "$this"/"$pkgname".rpm
+  fpm_ "${opts[@]}" -p "$this"/"$pkgname".rpm
 }
 
 # Doesn't actually work the same as the others...
