@@ -405,7 +405,7 @@ and iterative jobs), and other applications."
                --config-files etc/
                --prefix=/ )
   export PATH="$gem_bin":$PATH
-  ( cd toor && "$gem_bin"/fpm "${opts[@]}" "$@" -- . )
+  ( cd toor && fpm "${opts[@]}" "$@" -- . )
 }
 
 function save_python_egg {
