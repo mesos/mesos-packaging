@@ -355,11 +355,9 @@ function deb_ {
 function rpm_ {
 
   case "$linux" in
-    centos/6) libevent_devel_pkg=libevent2-devel ;;
-    rhel/6) libevent_devel_pkg=libevent2-devel ;;
-    centos/7) libevent_devel_pkg=libevent-devel ;;
-    rhel/7) libevent_devel_pkg=libevent-devel ;;
-    opensuse/*) libevent_devel_pkg=libevent-devel ;;
+    centos/6|rhel/6) os_tag=el6; libevent_devel_pkg=libevent2-devel ;;
+    centos/7|rhel/7) os_tag=el7; libevent_devel_pkg=libevent-devel ;;
+    opensuse/*)      os_tag=${linux//[\/.]/}; libevent_devel_pkg=libevent-devel ;;
     *)        err "Unknown CentOS distribution: $linux" ;;
   esac
 
@@ -373,7 +371,6 @@ function rpm_ {
 
   pkgname="pkg"
   if $rename; then
-    os_tag=${linux//[\/.]/} # convert "ubuntu/14.04" to "ubuntu1404"
     pkgname="mesos-${version}-${build_version}.${os_tag}.${arch}"
   fi
   rm -f "$this"/"$pkgname".rpm
