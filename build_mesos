@@ -94,7 +94,7 @@ function main {
   # Use the more specific dir, e.g. centos/6 will be used over centos if present
   if [[ -d "$this/$linux" ]]
   then asset_dir="$linux"
-  elif [[ -d "${linux%%/*}" ]]
+  elif [[ -d "$this/${linux%%/*}" ]]
   then asset_dir="${linux%%/*}"
   else err "Unable to determine asset_dir for $linux"; exit 1
   fi
