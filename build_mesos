@@ -255,6 +255,11 @@ function create_installation {(
 )}
 
 function create_lib_symlinks {(
+  if [[ -f usr/lib64/libmesos.so ]]; then
+    libdir=lib64
+  else
+    libdir=lib
+  fi
   cd toor
   if [[ ! -d usr/local/lib ]]
   then
@@ -262,7 +267,7 @@ function create_lib_symlinks {(
     msg "expects libmesos.so to exist in /usr/local/lib)."
     mkdir -p usr/local/lib
     # ensure symlinks are relative so they work as expected in the final env
-    ( cd usr/local/lib && cp -s ../../lib/lib*.so . )
+    ( cd usr/local/lib && cp -s ../../$libdir/lib*.so . )
   fi
 )}
 
