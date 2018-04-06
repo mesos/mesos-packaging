@@ -116,7 +116,7 @@ function go {
   if [[ ! $(configure_opts) =~ "--disable-python\>" ]]
   then
     save_python_egg
-  fi	  
+  fi
 }
 
 function mesos_version {
@@ -351,7 +351,7 @@ function deb_ {
                -d libevent-dev
                -d libsvn1
                -d libsasl2-modules
-               -d libcurl4-nss-dev
+               -d libcurl4-openssl-dev
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
   pkgname="pkg"
