@@ -51,7 +51,7 @@ function globals {
   this="$(cd "$(dirname "$0")" && pwd -P)"
   name=mesos
   build_version="0.1.$(date -u +'%Y%m%d%H%M%S')"
-  repo=https://git-wip-us.apache.org/repos/asf/mesos.git
+  repo=https://gitbox.apache.org/repos/asf/mesos.git
   use_git_version=false
   prebuilt=false
   extra_libs=''
