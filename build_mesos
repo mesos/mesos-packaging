@@ -404,10 +404,22 @@ function osx_ {(
 
 function fpm_ {
   local version="$(maybe_append_git_hash "$version")"
+
+  case "$linux" in
+    centos/6|rhel/6) os_tag=el6 ;;
+    centos/7|rhel/7) os_tag=el7 ;;
+    *)               os_tag=${linux//[\/.]/} ;;
+  esac
+
+  iteration=${build_version}
+  if $rename; then
+    iteration="${iteration}.${os_tag}"
+  fi
+
   local opts=( -s dir
                -n "$name"
                -v "$version"
-               --iteration "$build_version"
+               --iteration "${iteration}"
                --description
 "Cluster resource manager with efficient resource isolation
 Apache Mesos is a cluster manager that offers efficient resource isolation
