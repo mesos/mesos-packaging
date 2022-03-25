@@ -10,9 +10,10 @@ See [Mesos website](http://mesos.apache.org) for more details.
 ## Packaging Requirements
 
 ```bash
-sudo apt-get install ruby ruby-dev python-dev autoconf automake git make libssl-dev libcurl3 libtool
+sudo apt-get install ruby ruby-dev python-dev autoconf automake git make libssl-dev libcurl4 libtool
 sudo gem install fpm
 ```
+Note: In earlier versions of Debian based distros the dependency `libcurl4` should be replaced with `libcurl3`.
 
 ## Mesos Requirements
 
