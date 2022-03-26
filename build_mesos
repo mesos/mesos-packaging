@@ -189,12 +189,6 @@ function build {(
 )}
 
 function os_release {
-  msg "Trying /etc/os-release..."
-  if [[ -f /etc/os-release ]]
-  then
-    ( source /etc/os-release && display_version "$ID" "$VERSION_ID" )
-    return 0
-  fi
   msg "Trying /etc/redhat-release..."
   if [[ -f /etc/redhat-release ]]
   then
@@ -205,7 +199,8 @@ function os_release {
     then
       local os
       case "${BASH_REMATCH[1]}" in
-        'Red Hat '*) os=RedHat ;;
+        'Red Hat'*) os=RedHat ;;
+        'AlmaLinux'*) os=RedHat ;;
         *)           os="${BASH_REMATCH[1]}" ;;
       esac
       display_version "$os" "${BASH_REMATCH[2]}"
@@ -213,6 +208,12 @@ function os_release {
     else
       err "/etc/redhat-release not like: <distro> release <version> (<remark>)"
     fi
+  fi
+  msg "Trying /etc/os-release..."
+  if [[ -f /etc/os-release ]]
+  then
+    ( source /etc/os-release && display_version "$ID" "$VERSION_ID" )
+    return 0
   fi
   if which sw_vers &> /dev/null
   then
@@ -281,7 +282,7 @@ function init_scripts {
   mkdir -p usr/bin
   cp -p "$this"/mesos-init-wrapper usr/bin
   case "$1" in
-    fedora/*|redhat/7|redhat/7.*|centos/7|centos/7.*|rhel/7|rhel/7.*|opensuse/*)
+    fedora/*|redhat/7|redhat/7.*|redhat/8|redhat/8.*|centos/7|centos/7.*|rhel/7|rhel/7.*|opensuse/*)
       mkdir -p usr/lib/systemd/system
       cp "$this"/systemd/master.systemd usr/lib/systemd/system/mesos-master.service
       cp "$this"/systemd/slave.systemd usr/lib/systemd/system/mesos-slave.service ;;
@@ -376,6 +377,7 @@ function rpm_ {
   case "$linux" in
     centos/6|rhel/6) os_tag=el6; libevent_devel_pkg=libevent2-devel ;;
     centos/7|rhel/7) os_tag=el7; libevent_devel_pkg=libevent-devel ;;
+    redhat/8)        os_tag=el8; libevent_devel_pkg=libevent-devel ;;
     opensuse/*)      os_tag=${linux//[\/.]/}; libevent_devel_pkg=libevent-devel ;;
     *)        err "Unknown CentOS distribution: $linux" ;;
   esac
@@ -409,6 +411,7 @@ function fpm_ {
   case "$linux" in
     centos/6|rhel/6) os_tag=el6 ;;
     centos/7|rhel/7) os_tag=el7 ;;
+    redhat/8)        os_tag=el8 ;;
     *)               os_tag=${linux//[\/.]/} ;;
   esac
 
