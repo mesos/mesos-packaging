@@ -262,7 +262,8 @@ function create_installation {(
 )}
 
 function create_lib_symlinks {(
-  if [[ -f usr/lib64/libmesos.so ]]; then
+  local pwd="$(pwd -P)"
+  if [[ -f $pwd/toor/usr/lib64/libmesos.so ]]; then
     libdir=lib64
   else
     libdir=lib
