@@ -2,9 +2,9 @@
 set -o errexit -o nounset -o pipefail
 function -h {
 cat <<USAGE
- USAGE: mesos-init-wrapper (master|slave)
+ USAGE: mesos-init-wrapper (master|agent)
 
-  Run Mesos in master or slave mode, loading environment files, setting up
+  Run Mesos in master or agent mode, loading environment files, setting up
   logging and loading config parameters as appropriate.
 
   To configure Mesos, you have many options:
@@ -13,49 +13,49 @@ cat <<USAGE
 
       /etc/mesos/zk
 
-    and it will be picked up by the slave and master.
+    and it will be picked up by the agent and master.
 
  *  You can set environment variables (including the MESOS_* variables) in
     files under /etc/default/:
 
-      /etc/default/mesos          # For both slave and master.
+      /etc/default/mesos          # For both agent and master.
       /etc/default/mesos-master   # For the master only.
-      /etc/default/mesos-slave    # For the slave only.
+      /etc/default/mesos-agent    # For the agent only.
 
- *  To set command line options for the slave or master, you can create files
+ *  To set command line options for the agent or master, you can create files
     under certain directories:
 
-      /etc/mesos-slave            # For the slave only.
+      /etc/mesos-agent            # For the agent only.
       /etc/mesos-master           # For the master only.
 
-    For example, to set the port for the slave:
+    For example, to set the port for the agent:
 
-      echo 5050 > /etc/mesos-slave/port
+      echo 5050 > /etc/mesos-agent/port
 
     To set the switch user flag:
 
-      touch /etc/mesos-slave/?switch_user
+      touch /etc/mesos-agent/?switch_user
 
     To explicitly disable it:
 
-      touch /etc/mesos-slave/?no-switch_user
+      touch /etc/mesos-agent/?no-switch_user
 
-    Adding attributes and resources to the slaves is slightly more granular.
+    Adding attributes and resources to the agents is slightly more granular.
     Although you can pass them all at once with files called 'attributes' and
     'resources', you can also set them by creating files under directories
     labeled 'attributes' or 'resources':
 
-      echo north-west > /etc/mesos-slave/attributes/rack
+      echo north-west > /etc/mesos-agent/attributes/rack
 
     This is intended to allow easy addition and removal of attributes and
-    resources from the slave configuration.
+    resources from the agent configuration.
 
 USAGE
 }; function --help { -h ;}                 # A nice way to handle -h and --help
 export LC_ALL=en_US.UTF-8                    # A locale that works consistently
 
 function main {
-  err "Please use \`master' or \`slave'."
+  err "Please use \`master' or \`agent'."
 }
 
 # Search supplied directory for files that do not end with .dkpg-dist or .rpmnew
@@ -64,23 +64,23 @@ function find_files {
          -o \( -type f -print \)
 }
 
-function slave {
-  local etc_slave=/etc/mesos-slave
+function agent {
+  local etc_agent=/etc/mesos-agent
   local args=()
   local attributes=()
   local resources=()
   # Call mesosphere-dnsconfig if present on the system to generate config files.
-  [ -x /usr/bin/mesosphere-dnsconfig ] && mesosphere-dnsconfig -write -service=mesos-slave
+  [ -x /usr/bin/mesosphere-dnsconfig ] && mesosphere-dnsconfig -write -service=mesos-agent
   set -o allexport
   [[ ! -f /etc/default/mesos ]]       || . /etc/default/mesos
-  [[ ! -f /etc/default/mesos-slave ]] || . /etc/default/mesos-slave
+  [[ ! -f /etc/default/mesos-agent ]] || . /etc/default/mesos-agent
   set +o allexport
   [[ ! ${ULIMIT:-} ]]    || ulimit $ULIMIT
   [[ ! ${MASTER:-} ]]    || args+=( --master="$MASTER" )
   [[ ! ${IP:-} ]]        || args+=( --ip="$IP" )
   [[ ! ${LOGS:-} ]]      || args+=( --log_dir="$LOGS" )
   [[ ! ${ISOLATION:-} ]] || args+=( --isolation="$ISOLATION" )
-  for f in $(find_files "$etc_slave") # attributes ip resources isolation &al.
+  for f in $(find_files "$etc_agent") # attributes ip resources isolation &al.
   do
     if [[ -f $f ]]
     then
@@ -93,7 +93,7 @@ function slave {
   done
   # We allow the great multitude of attributes and resources to be specified
   # in directories, where the filename is the key and the contents its value.
-  for f in $(find_files "$etc_slave"/attributes/)
+  for f in $(find_files "$etc_agent"/attributes/)
   do [[ ! -s $f ]] || attributes+=( "$(basename "$f")":"$(cat "$f")" )
   done
   if [[ ${#attributes[@]} -gt 0 ]]
@@ -101,7 +101,7 @@ function slave {
     local formatted="$(printf ';%s' "${attributes[@]}")"
     args+=( --attributes="${formatted:1}" )        # NB: Leading ';' is clipped
   fi
-  for f in $(find_files "$etc_slave"/resources/)
+  for f in $(find_files "$etc_agent"/resources/)
   do [[ ! -s $f ]] || resources+=( "$(basename "$f")":"$(cat "$f")" )
   done
   if [[ ${#resources[@]} -gt 0 ]]
@@ -118,9 +118,9 @@ function slave {
         clean_args+=( "${i}" )
       fi
     done
-    exec /usr/sbin/mesos-slave "${clean_args[@]}"
+    exec /usr/sbin/mesos-agent "${clean_args[@]}"
   else
-    logged /usr/sbin/mesos-slave "${args[@]:-}"
+    logged /usr/sbin/mesos-agent "${args[@]:-}"
   fi
 }
 
@@ -181,4 +181,3 @@ if [[ ${1:-} ]] && declare -F | cut -d' ' -f3 | fgrep -qx -- "${1:-}"
 then "$@"
 else main "$@"
 fi
-
