@@ -286,19 +286,23 @@ function init_scripts {
     fedora/*|redhat/7|redhat/7.*|redhat/8|redhat/8.*|centos/7|centos/7.*|rhel/7|rhel/7.*|opensuse/*)
       mkdir -p usr/lib/systemd/system
       cp "$this"/systemd/master.systemd usr/lib/systemd/system/mesos-master.service
-      cp "$this"/systemd/slave.systemd usr/lib/systemd/system/mesos-slave.service ;;
-    debian/8*|debian/9*|ubuntu/15*|ubuntu/16*|ubuntu/17*|ubuntu/18*|ubuntu/20*)
+      cp "$this"/systemd/slave.systemd usr/lib/systemd/system/mesos-slave.service 
+      return ;;
+    debian/8*|debian/9*|debian/11*|ubuntu/15*|ubuntu/16*|ubuntu/17*|ubuntu/18*|ubuntu/20*)
       mkdir -p lib/systemd/system
       cp "$this"/systemd/master.systemd lib/systemd/system/mesos-master.service
-      cp "$this"/systemd/slave.systemd lib/systemd/system/mesos-slave.service ;;
+      cp "$this"/systemd/slave.systemd lib/systemd/system/mesos-slave.service 
+      return ;;
     debian/*)
       mkdir -p etc/init.d
       cp -p "$this"/init/master.init etc/init.d/mesos-master
-      cp -p "$this"/init/slave.init etc/init.d/mesos-slave ;;
+      cp -p "$this"/init/slave.init etc/init.d/mesos-slave 
+      return ;;
     ubuntu/*|redhat/6|redhat/6.*|centos/6|centos/6.*)
       mkdir -p etc/init
       cp "$this"/upstart/master.upstart etc/init/mesos-master.conf
-      cp "$this"/upstart/slave.upstart etc/init/mesos-slave.conf ;;
+      cp "$this"/upstart/slave.upstart etc/init/mesos-slave.conf 
+      return ;;
     *) err "Not sure how to make init scripts for: $1" ;;
   esac
 }
