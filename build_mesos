@@ -346,8 +346,9 @@ function find_gem_bin {
 function deb_ {
   local libcurl_package
   case "$linux" in
-    ubuntu/20*) libcurl_package="libcurl4" ;;
-    ubuntu/18*) libcurl_package="libcurl4" ;;
+    ubuntu/20*) libcurl_package="libcurl4 -d libcurl4-openssl-dev" ;;
+    ubuntu/18*) libcurl_package="libcurl4 -d libcurl4-openssl-dev" ;;
+    debian/11*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;
     *)          libcurl_package="libcurl3" ;;
   esac
 
@@ -360,7 +361,6 @@ function deb_ {
                -d libevent-dev
                -d libsvn1
                -d libsasl2-modules
-               -d libcurl4-openssl-dev
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
   pkgname="pkg"
