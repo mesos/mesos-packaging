@@ -356,9 +356,6 @@ function deb_ {
   esac
 
   local opts=( -t deb
-               --deb-recommends zookeeper
-               --deb-recommends zookeeperd
-               --deb-recommends zookeeper-bin
                -d 'java-runtime-headless | java2-runtime-headless | default-jre'
                -d $libcurl_package
                -d libevent-dev
